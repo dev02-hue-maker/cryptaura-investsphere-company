@@ -246,7 +246,7 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
       // Lookup email by username
       const { data: profile, error: profileError } = await supabase
         .from('cryptaura_profile')
-        .select('email')
+        .select('email, is_admin')
         .eq('username', emailOrUsername)
         .single()
 
@@ -267,7 +267,19 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
       return { error: 'Invalid credentials' }
     }
 
-    // 4. Handle session
+    // 4. Get user profile with is_admin field
+    const { data: userProfile, error: profileError } = await supabase
+      .from('cryptaura_profile')
+      .select('username, is_admin')
+      .eq('id', data.user?.id)
+      .single()
+
+    if (profileError) {
+      console.error('Failed to fetch user profile:', profileError)
+      return { error: 'Failed to fetch user profile' }
+    }
+
+    // 5. Handle session
     const sessionToken = data.session?.access_token
     const refreshToken = data.session?.refresh_token
     const userId = data.user?.id
@@ -277,8 +289,8 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
       return { error: 'Failed to create session' }
     }
 
-    // 5. Set cookies
-    const cookieStore =await cookies()
+    // 6. Set cookies
+    const cookieStore = await cookies()
     const oneYear = 31536000 // 1 year in seconds
 
     cookieStore.set('sb-access-token', sessionToken, {
@@ -305,13 +317,7 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
       sameSite: 'lax',
     })
 
-    // Get username to store in cookie
-    const { data: userProfile } = await supabase
-      .from('cryptaura_profile')
-      .select('username')
-      .eq('id', userId)
-      .single()
-
+    // Set username cookie
     if (userProfile?.username) {
       cookieStore.set('username', userProfile.username, {
         httpOnly: false,
@@ -322,9 +328,19 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
       })
     }
 
+    // Set is_admin cookie for client-side routing
+    cookieStore.set('is_admin', userProfile?.is_admin ? 'true' : 'false', {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === 'production',
+      maxAge: oneYear,
+      path: '/',
+      sameSite: 'lax',
+    })
+
     return {
       user: data.user,
       session: data.session,
+      is_admin: userProfile?.is_admin || false,
       message: 'Login successful'
     }
   } catch (err) {
@@ -332,6 +348,7 @@ export async function signIn({ emailOrUsername, password }: SignInInput) {
     return { error: 'An unexpected error occurred' }
   }
 }
+
 
 export async function resetPassword({ email }: ResetPasswordInput) {
   try {

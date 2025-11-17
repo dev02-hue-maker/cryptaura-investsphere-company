@@ -1,5 +1,5 @@
 "use server";
-import { CryptoPaymentOption, Deposit, DepositInput, DepositStatus, InvestmentPlan, UpdateInvestmentPlanInput } from "@/types/businesses";
+import { CreateCryptoPaymentOption, CryptoPaymentOption, Deposit, DepositFilters, DepositInput, DepositStatus, InvestmentPlan, UpdateCryptoPaymentOption, UpdateInvestmentPlanInput } from "@/types/businesses";
 import { getSession } from "./auth";
 import { supabase } from "./supabaseClient";
 import nodemailer from "nodemailer";
@@ -188,12 +188,13 @@ export async function updateInvestmentPlan(input: UpdateInvestmentPlanInput): Pr
 }
 
 // Get all crypto payment options
+// cryptoPaymentOptions.ts
 export async function getCryptoPaymentOptions(): Promise<{ data?: CryptoPaymentOption[]; error?: string }> {
   try {
     const { data: options, error } = await supabase
       .from('cryptaura_crypto_payment_options')
       .select('*')
-      .eq('is_active', true);
+      .order('created_at', { ascending: false });
 
     if (error) {
       console.error('Error fetching crypto payment options:', error);
@@ -206,11 +207,192 @@ export async function getCryptoPaymentOptions(): Promise<{ data?: CryptoPaymentO
         name: option.name,
         symbol: option.symbol,
         network: option.network,
-        walletAddress: option.wallet_address
+        walletAddress: option.wallet_address,
+        isActive: option.is_active,
+        createdAt: option.created_at,
+        updatedAt: option.updated_at
       })) || []
     };
   } catch (err) {
     console.error('Unexpected error in getCryptoPaymentOptions:', err);
+    return { error: 'An unexpected error occurred' };
+  }
+}
+
+export async function getCryptoPaymentOptionById(id: string): Promise<{ data?: CryptoPaymentOption; error?: string }> {
+  try {
+    const { data: option, error } = await supabase
+      .from('cryptaura_crypto_payment_options')
+      .select('*')
+      .eq('id', id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching crypto payment option:', error);
+      return { error: 'Failed to fetch payment option' };
+    }
+
+    if (!option) {
+      return { error: 'Payment option not found' };
+    }
+
+    return {
+      data: {
+        id: option.id,
+        name: option.name,
+        symbol: option.symbol,
+        network: option.network,
+        walletAddress: option.wallet_address,
+        isActive: option.is_active,
+        createdAt: option.created_at,
+        updatedAt: option.updated_at
+      }
+    };
+  } catch (err) {
+    console.error('Unexpected error in getCryptoPaymentOptionById:', err);
+    return { error: 'An unexpected error occurred' };
+  }
+}
+
+export async function createCryptoPaymentOption(
+  optionData: CreateCryptoPaymentOption
+): Promise<{ data?: CryptoPaymentOption; error?: string }> {
+  try {
+    const { data: option, error } = await supabase
+      .from('cryptaura_crypto_payment_options')
+      .insert({
+        name: optionData.name,
+        symbol: optionData.symbol,
+        network: optionData.network,
+        wallet_address: optionData.walletAddress,
+        is_active: optionData.isActive
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error creating crypto payment option:', error);
+      return { error: 'Failed to create payment option' };
+    }
+
+    return {
+      data: {
+        id: option.id,
+        name: option.name,
+        symbol: option.symbol,
+        network: option.network,
+        walletAddress: option.wallet_address,
+        isActive: option.is_active,
+        createdAt: option.created_at,
+        updatedAt: option.updated_at
+      }
+    };
+  } catch (err) {
+    console.error('Unexpected error in createCryptoPaymentOption:', err);
+    return { error: 'An unexpected error occurred' };
+  }
+}
+
+export async function updateCryptoPaymentOption(
+  optionData: UpdateCryptoPaymentOption
+): Promise<{ data?: CryptoPaymentOption; error?: string }> {
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const updateData: any = {};
+    
+    if (optionData.name !== undefined) updateData.name = optionData.name;
+    if (optionData.symbol !== undefined) updateData.symbol = optionData.symbol;
+    if (optionData.network !== undefined) updateData.network = optionData.network;
+    if (optionData.walletAddress !== undefined) updateData.wallet_address = optionData.walletAddress;
+    if (optionData.isActive !== undefined) updateData.is_active = optionData.isActive;
+    
+    updateData.updated_at = new Date().toISOString();
+
+    const { data: option, error } = await supabase
+      .from('cryptaura_crypto_payment_options')
+      .update(updateData)
+      .eq('id', optionData.id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating crypto payment option:', error);
+      return { error: 'Failed to update payment option' };
+    }
+
+    return {
+      data: {
+        id: option.id,
+        name: option.name,
+        symbol: option.symbol,
+        network: option.network,
+        walletAddress: option.wallet_address,
+        isActive: option.is_active,
+        createdAt: option.created_at,
+        updatedAt: option.updated_at
+      }
+    };
+  } catch (err) {
+    console.error('Unexpected error in updateCryptoPaymentOption:', err);
+    return { error: 'An unexpected error occurred' };
+  }
+}
+
+export async function deleteCryptoPaymentOption(
+  id: string
+): Promise<{ error?: string }> {
+  try {
+    const { error } = await supabase
+      .from('cryptaura_crypto_payment_options')
+      .delete()
+      .eq('id', id);
+
+    if (error) {
+      console.error('Error deleting crypto payment option:', error);
+      return { error: 'Failed to delete payment option' };
+    }
+
+    return {};
+  } catch (err) {
+    console.error('Unexpected error in deleteCryptoPaymentOption:', err);
+    return { error: 'An unexpected error occurred' };
+  }
+}
+
+export async function toggleCryptoPaymentOptionStatus(
+  id: string,
+  isActive: boolean
+): Promise<{ data?: CryptoPaymentOption; error?: string }> {
+  try {
+    const { data: option, error } = await supabase
+      .from('cryptaura_crypto_payment_options')
+      .update({
+        is_active: isActive,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error toggling crypto payment option status:', error);
+      return { error: 'Failed to update payment option status' };
+    }
+
+    return {
+      data: {
+        id: option.id,
+        name: option.name,
+        symbol: option.symbol,
+        network: option.network,
+        walletAddress: option.wallet_address,
+        isActive: option.is_active,
+        createdAt: option.created_at,
+        updatedAt: option.updated_at
+      }
+    };
+  } catch (err) {
+    console.error('Unexpected error in toggleCryptoPaymentOptionStatus:', err);
     return { error: 'An unexpected error occurred' };
   }
 }
@@ -735,12 +917,7 @@ export async function getAllDepositss(): Promise<{ data?: Deposit[]; error?: str
 
 // Get all deposits (admin)
 export async function getAllDeposits(
-  filters: {
-    status?: DepositStatus;
-    userId?: string;
-    limit?: number;
-    offset?: number;
-  } = {}
+  filters: DepositFilters = {}
 ): Promise<{ data?: Deposit[]; error?: string; count?: number }> {
   try {
     // 1. Build base query
@@ -756,10 +933,10 @@ export async function getAllDeposits(
         processed_at,
         transaction_hash,
         admin_notes,
+        user_id,
         cryptaura_investment_plans!inner(title),
         cryptaura_profile!inner(email, username)
-      `, { count: 'exact' })
-      .order('created_at', { ascending: false });
+      `, { count: 'exact' });
 
     // 2. Apply filters
     if (filters.status) {
@@ -770,6 +947,34 @@ export async function getAllDeposits(
       query = query.eq('user_id', filters.userId);
     }
 
+    if (filters.cryptoType) {
+      query = query.eq('crypto_type', filters.cryptoType);
+    }
+
+    if (filters.dateFrom) {
+      query = query.gte('created_at', filters.dateFrom);
+    }
+
+    if (filters.dateTo) {
+      query = query.lte('created_at', filters.dateTo);
+    }
+
+    if (filters.search) {
+      query = query.or(`
+        transaction_hash.ilike.%${filters.search}%,
+        reference.ilike.%${filters.search}%,
+        cryptaura_profile.username.ilike.%${filters.search}%,
+        cryptaura_profile.email.ilike.%${filters.search}%,
+        cryptaura_investment_plans.title.ilike.%${filters.search}%
+      `);
+    }
+
+    // 3. Apply sorting
+    const sortBy = filters.sortBy || 'created_at';
+    const sortOrder = filters.sortOrder || 'desc';
+    query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+    // 4. Apply pagination
     if (filters.limit) {
       query = query.limit(filters.limit);
     }
@@ -778,7 +983,7 @@ export async function getAllDeposits(
       query = query.range(filters.offset, filters.offset + filters.limit - 1);
     }
 
-    // 3. Execute query
+    // 5. Execute query
     const { data, error, count } = await query;
 
     if (error) {
@@ -787,20 +992,21 @@ export async function getAllDeposits(
     }
 
     return {
-        data: data?.map(deposit => ({
-            id: deposit.id,
-            amount: deposit.amount,
-            cryptoType: deposit.crypto_type,
-            status: deposit.status,
-            reference: deposit.reference,
-            createdAt: deposit.created_at,
-            processedAt: deposit.processed_at,
-            transactionHash: deposit.transaction_hash,
-            adminNotes: deposit.admin_notes,
-            planTitle: deposit.cryptaura_investment_plans[0]?.title,
-            userEmail: deposit.cryptaura_profile[0]?.email,
-            username: deposit.cryptaura_profile[0]?.username
-          })),
+      data: data?.map(deposit => ({
+        id: deposit.id,
+        amount: deposit.amount,
+        cryptoType: deposit.crypto_type,
+        status: deposit.status,
+        reference: deposit.reference,
+        createdAt: deposit.created_at,
+        processedAt: deposit.processed_at,
+        transactionHash: deposit.transaction_hash,
+        adminNotes: deposit.admin_notes,
+        planTitle: deposit.cryptaura_investment_plans[0]?.title,
+        userEmail: deposit.cryptaura_profile[0]?.email,
+        username: deposit.cryptaura_profile[0]?.username,
+        userId: deposit.user_id
+      })),
       count: count || 0
     };
   } catch (err) {

@@ -1,5 +1,5 @@
 "use server";
-import { Withdrawal, WithdrawalInput, WithdrawalStatus } from "@/types/businesses";
+import { Withdrawal, WithdrawalFilters, WithdrawalInput, WithdrawalStatus } from "@/types/businesses";
 import { getSession } from "./auth";
 import { supabase } from "./supabaseClient";
 import { sendWithdrawalNotificationToAdmin } from "./email";
@@ -352,12 +352,7 @@ export async function getUserWithdrawals(
 
 // Get all withdrawals (admin)
 export async function getAllWithdrawals(
-  filters: {
-    status?: WithdrawalStatus;
-    userId?: string;
-    limit?: number;
-    offset?: number;
-  } = {}
+  filters: WithdrawalFilters = {}
 ): Promise<{ data?: Withdrawal[]; error?: string; count?: number }> {
   try {
     // 1. Build base query
@@ -373,9 +368,9 @@ export async function getAllWithdrawals(
         processed_at,
         wallet_address,
         admin_notes,
+        user_id,
         cryptaura_profile!inner(email, username)
-      `, { count: 'exact' })
-      .order('created_at', { ascending: false });
+      `, { count: 'exact' });
 
     // 2. Apply filters
     if (filters.status) {
@@ -386,6 +381,33 @@ export async function getAllWithdrawals(
       query = query.eq('user_id', filters.userId);
     }
 
+    if (filters.cryptoType) {
+      query = query.eq('crypto_type', filters.cryptoType);
+    }
+
+    if (filters.dateFrom) {
+      query = query.gte('created_at', filters.dateFrom);
+    }
+
+    if (filters.dateTo) {
+      query = query.lte('created_at', filters.dateTo);
+    }
+
+    if (filters.search) {
+      query = query.or(`
+        wallet_address.ilike.%${filters.search}%,
+        reference.ilike.%${filters.search}%,
+        cryptaura_profile.username.ilike.%${filters.search}%,
+        cryptaura_profile.email.ilike.%${filters.search}%
+      `);
+    }
+
+    // 3. Apply sorting
+    const sortBy = filters.sortBy || 'created_at';
+    const sortOrder = filters.sortOrder || 'desc';
+    query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+    // 4. Apply pagination
     if (filters.limit) {
       query = query.limit(filters.limit);
     }
@@ -394,7 +416,7 @@ export async function getAllWithdrawals(
       query = query.range(filters.offset, filters.offset + filters.limit - 1);
     }
 
-    // 3. Execute query
+    // 5. Execute query
     const { data, error, count } = await query;
 
     if (error) {
@@ -414,7 +436,8 @@ export async function getAllWithdrawals(
         walletAddress: withdrawal.wallet_address,
         adminNotes: withdrawal.admin_notes,
         userEmail: withdrawal.cryptaura_profile[0]?.email,
-        username: withdrawal.cryptaura_profile[0]?.username
+        username: withdrawal.cryptaura_profile[0]?.username,
+        userId: withdrawal.user_id
       })),
       count: count || 0
     };

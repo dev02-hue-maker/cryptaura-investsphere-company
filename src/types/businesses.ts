@@ -54,15 +54,30 @@ export  type InvestmentPlan = {
   referralBonus: number;
 };
 
-export  type CryptoPaymentOption = {
-  id: number;
+export interface CryptoPaymentOption {
+  id: string;
   name: string;
   symbol: string;
   network: string;
   walletAddress: string;
-};
+  isActive: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
 
-export  type DepositStatus = 'pending' | 'completed' | 'rejected';
+export interface CreateCryptoPaymentOption {
+  name: string;
+  symbol: string;
+  network: string;
+  walletAddress: string;
+  isActive: boolean;
+}
+
+export interface UpdateCryptoPaymentOption extends Partial<CreateCryptoPaymentOption> {
+  id: string;
+}
+
+export type DepositStatus = 'pending' | 'confirmed' | 'completed' | 'failed' | 'cancelled';
 
 export  type Deposit = {
   id: string;
@@ -77,11 +92,25 @@ export  type Deposit = {
   planTitle?: string;
   userEmail?: string;
   username?: string;
+  userId?: string;
 };
+
+export interface DepositFilters {
+  status?: DepositStatus;
+  userId?: string;
+  cryptoType?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+  sortBy?: 'created_at' | 'amount' | 'crypto_type' | 'status' | 'user_email' | 'plan_title';
+  sortOrder?: 'asc' | 'desc';
+}
 
 
 // Withdrawal status types
-export type WithdrawalStatus = 'pending' | 'processing' | 'completed' | 'rejected';
+export type WithdrawalStatus = 'pending' | 'processing' | 'completed' | 'failed' | 'cancelled' | 'rejected';
 
 // Input for initiating a withdrawal
 export interface WithdrawalInput {
@@ -102,7 +131,21 @@ export interface Withdrawal {
   processedAt?: string;
   adminNotes?: string;
   userEmail?: string;       // Only for admin views
-  username?: string;        // Only for admin views
+  username?: string;  
+  userId?: string;      // Only for admin views
+}
+
+export interface WithdrawalFilters {
+  status?: WithdrawalStatus;
+  userId?: string;
+  cryptoType?: string;
+  dateFrom?: string;
+  dateTo?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+  sortBy?: 'created_at' | 'amount' | 'crypto_type' | 'status' | 'user_email';
+  sortOrder?: 'asc' | 'desc';
 }
 
 export type ProfileData = {

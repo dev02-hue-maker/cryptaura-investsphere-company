@@ -42,7 +42,12 @@ const LoginForm = () => {
       if (result.error) {
         setError(result.error);
       } else {
-        router.push("/user/dashboard");
+        // Check if user is admin and redirect accordingly
+        if (result.is_admin) {
+          router.push("/deri");
+        } else {
+          router.push("/user/dashboard");
+        }
       }
     } catch (err) {
       console.log(err)

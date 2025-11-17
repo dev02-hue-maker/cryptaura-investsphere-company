@@ -14,11 +14,12 @@
     "@supabase/supabase-js": "^2.51.0",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.23.3",
-    "next": "15.3.5",
+    "next": "^16.0.3",
     "nodemailer": "^7.0.5",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
+    "recharts": "^3.4.1",
     "sonner": "^2.0.6",
     "uuid": "^11.1.0"
   },

@@ -113,7 +113,7 @@ const TransactionsTable = () => {
   };
 
   const getStatusBadge = (status: TransactionStatus) => {
-    const statusInfo = statusMap[status] || { color: 'bg-gray-100 text-gray-800', icon: null, label: status };
+    const statusInfo = statusMap[status as keyof typeof statusMap] || { color: 'bg-gray-100 text-gray-800', icon: null, label: status };
     return (
       <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${statusInfo.color}`}>
         {statusInfo.icon && <span className="mr-1">{statusInfo.icon}</span>}
@@ -160,7 +160,7 @@ const TransactionsTable = () => {
                 <option value="all">All Statuses</option>
                 {Object.keys(statusMap).map((status) => (
                   <option key={status} value={status}>
-                    {statusMap[status as TransactionStatus]?.label || status}
+                    {statusMap[status as keyof typeof statusMap]?.label || status}
                   </option>
                 ))}
               </select>

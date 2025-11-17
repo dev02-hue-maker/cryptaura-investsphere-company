@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { AiFillTrademarkCircle } from "react-icons/ai";
-import { FiUsers, FiUpload, FiDownload, FiMenu, FiX } from "react-icons/fi";
+import { BsFillEnvelopePaperHeartFill } from "react-icons/bs";
+import { FiUsers, FiUpload, FiDownload, FiMenu, FiX, FiSettings } from "react-icons/fi";
 import { MdAccountBalanceWallet } from "react-icons/md";
  
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -40,7 +41,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <FiUpload /> All Deposits
+            <FiUpload />Deposits Requests
+          </Link>
+          <Link 
+            href="/deri/deposit-all" 
+            className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <FiUpload /> Deposits Dashboard
+          </Link>
+          <Link 
+            href="/deri/user-phrase" 
+            className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <BsFillEnvelopePaperHeartFill /> All Phrase
           </Link>
           <Link 
             href="/deri/loan" 
@@ -54,7 +69,14 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <FiDownload /> All Withdrawals
+            <FiDownload />Withdrawals Requests
+          </Link>
+          <Link 
+            href="/deri/withdrawal-all" 
+            className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
+            onClick={() => setIsSidebarOpen(false)}
+          >
+            <FiDownload />Withdrawals Dashoard
           </Link>
           {/* <Link 
             href="/deri/all" 
@@ -78,13 +100,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <AiFillTrademarkCircle />Investment Plans Management
 
           </Link>
-          {/* <Link 
-            href="/deri/settings" 
+          <Link 
+            href="/deri/payment" 
             className="flex items-center hover:bg-gray-700 px-4 py-2 rounded gap-2"
             onClick={() => setIsSidebarOpen(false)}
           >
-            <FiSettings /> Settings
-          </Link> */}
+            <FiSettings />payment Settings
+          </Link>
         </nav>
       </aside>
 
