@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 
 const LetsDoGreat = () => {
   const [count, setCount] = useState(0);
-  const target = 86704;
+  const target = 100704;
   const duration = 2.5; // seconds
 
   useEffect(() => {
