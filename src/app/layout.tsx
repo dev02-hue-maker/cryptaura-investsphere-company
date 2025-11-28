@@ -3,7 +3,7 @@ import { Inter, Roboto_Mono } from "next/font/google";
 import "./globals.css";
  
 import LayoutWrapper from "./component/layout/LayoutWrapper";
-// import SmartSuppScript from "./component/user/SmartSuppScript";
+ import SmartSuppScript from "./component/user/SmartSuppScript";
 
 // Use system fonts as fallback
 const inter = Inter({
@@ -74,7 +74,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-      {/* <SmartSuppScript /> */}
+      <SmartSuppScript /> 
       </head>
       <body
         className={`${inter.variable} ${robotoMono.variable} antialiased`}
