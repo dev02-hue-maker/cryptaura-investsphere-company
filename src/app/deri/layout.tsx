@@ -1,5 +1,6 @@
 // app/deri/layout.tsx
 "use client"
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { ReactNode, useState } from "react";
 import { AiFillTrademarkCircle } from "react-icons/ai";

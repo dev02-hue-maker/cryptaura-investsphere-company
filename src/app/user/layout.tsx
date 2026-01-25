@@ -1,4 +1,5 @@
- import CryptoCurrencyTicker1 from "../component/home/CryptoCurrencyTicker1";
+export const dynamic = "force-dynamic";
+import CryptoCurrencyTicker1 from "../component/home/CryptoCurrencyTicker1";
 import Navbar from "../component/user/layout/Navbar";
 import { ReactNode } from "react";
 
