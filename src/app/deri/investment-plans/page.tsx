@@ -1,4 +1,6 @@
 "use client";
+export const dynamic = "force-dynamic";
+
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaSave, FaTimes, FaPercent, FaDollarSign, FaCalendarAlt } from "react-icons/fa";
 import { motion } from "framer-motion";
