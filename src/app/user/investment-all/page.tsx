@@ -1,3 +1,6 @@
+
+export const dynamic = "force-dynamic";
+
 import UserInvestments from '@/app/component/user/profile/UserInvestments'
 import React from 'react'
 

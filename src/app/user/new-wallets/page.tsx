@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import CryptoAddressManager from '@/app/component/user/profile/CryptoAddressManager'
 import React from 'react'
 

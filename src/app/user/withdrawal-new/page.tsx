@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import WithdrawalForm from '@/app/component/user/profile/WithdrawalForm'
 import React from 'react'
 

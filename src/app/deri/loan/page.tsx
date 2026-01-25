@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import LoanManagement from '@/app/component/user/profile/LoanManagement'
 import React from 'react'
 

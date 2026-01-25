@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import AdminWithdrawalsTable from '@/app/component/admin/AdminWithdrawalsTable'
 import React from 'react'
 

@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import WithdrawalHistory from '@/app/component/user/profile/WithdrawalHistory'
 import React from 'react'
 
