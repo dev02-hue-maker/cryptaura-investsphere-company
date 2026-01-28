@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import WithdrawalsDashboard from '@/app/component/admin/WithdrawalsDashboard'
 import React from 'react'
 

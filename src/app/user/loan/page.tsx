@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import LoanApplication from '@/app/component/user/profile/LoanApplication'
 import React from 'react'
 

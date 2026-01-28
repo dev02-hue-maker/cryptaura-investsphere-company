@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import CryptoPaymentOptionsManager from '@/app/component/admin/CryptoPaymentOptionsManager'
 import React from 'react'
 

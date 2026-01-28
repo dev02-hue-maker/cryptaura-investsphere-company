@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
  import CryptoAddressDisplay from '@/app/component/user/profile/CryptoAddressDisplay'
 import React from 'react'
 

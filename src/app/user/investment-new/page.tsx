@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 
 import InvestmentPlans from '@/app/component/user/profile/InvestmentPlans'
 import React from 'react'

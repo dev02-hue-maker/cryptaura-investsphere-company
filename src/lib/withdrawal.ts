@@ -162,18 +162,56 @@ export async function approveWithdrawal(withdrawalId: string): Promise<{ success
 
     // Send Approval Email
     await transporter.sendMail({
-      from: `"Cryptaura Finance" <${process.env.EMAIL_USERNAME}>`,
-      to: profile.email,
-      subject: `Withdrawal of $${withdrawal.amount} Approved`,
-      html: `
-        <div style="font-family: Arial, sans-serif; max-width: 600px;">
-          <h2 style="color: #2a52be;">Withdrawal Approved</h2>
-          <p>Dear ${profile.username || 'Valued Customer'},</p>
-          <p>Your withdrawal of <strong>$${withdrawal.amount}</strong> (${withdrawal.crypto_type}) has been approved and sent to your wallet.</p>
-          <p>Thank you for choosing Cryptaura Finance.</p>
-        </div>
-      `
-    });
+  from: `"Cryptaura Finance" <${process.env.EMAIL_USERNAME}>`,
+  to: profile.email,
+  subject: `Withdrawal of $${withdrawal.amount} Approved`,
+  html: `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+      
+      <h2 style="color: #2a52be;">✅ Withdrawal Approved</h2>
+
+      <p style="font-size: 15px;">Dear ${profile.username || 'Valued Customer'},</p>
+
+      <p style="font-size: 15px; line-height: 1.6;">
+        We are pleased to inform you that your withdrawal request has been successfully approved.
+      </p>
+
+      <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin: 15px 0;">
+        <p><strong>Withdrawal Amount:</strong> $${withdrawal.amount}</p>
+        <p><strong>Crypto Type:</strong> ${withdrawal.crypto_type}</p>
+        <p><strong>Status:</strong> Approved & Sent</p>
+        <p><strong>Date:</strong> ${new Date().toLocaleDateString()}</p>
+      </div>
+
+      <p style="font-size: 15px; line-height: 1.6;">
+        The funds have been sent to your registered wallet address.  
+        Please allow a few minutes for the blockchain network to confirm the transaction.
+      </p>
+
+      <p style="font-size: 15px; line-height: 1.6;">
+        If you did not authorize this withdrawal or notice any unusual activity, please contact our support team immediately.
+      </p>
+
+      <p style="margin-top: 20px; font-size: 15px;">
+        Thank you for trusting <strong>Cryptaura Finance</strong>.
+      </p>
+
+      <hr style="margin: 25px 0; border: none; border-top: 1px solid #ddd;" />
+
+      <p style="font-size: 13px; color: #777;">
+        Need help? Contact us at 
+        <a href="mailto:cryptaurainvestspherecompany@gmail.com" style="color: #2a52be;">
+          cryptaurainvestspherecompany@gmail.com
+        </a>
+      </p>
+
+      <p style="font-size: 12px; color: #999;">
+        © ${new Date().getFullYear()} Cryptaura Finance. All rights reserved.
+      </p>
+    </div>
+  `
+});
+
 
     return { success: true };
   } catch (err) {

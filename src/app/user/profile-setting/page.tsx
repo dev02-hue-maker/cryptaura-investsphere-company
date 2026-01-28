@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import ProfileSettings from '@/app/component/user/profile/ProfileSettings'
 import React from 'react'
 

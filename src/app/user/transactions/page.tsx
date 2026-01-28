@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import TransactionsTable from '@/app/component/user/layout/TransactionsTable'
 import React from 'react'
 

@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import DepositsDashboard from '@/app/component/admin/DepositsDashboard'
 import React from 'react'
 

@@ -1,6 +1,5 @@
 "use client";
-export const dynamic = "force-dynamic";
-
+ 
 
 import { getUserDeposits } from '@/lib/investmentplan';
 import { Deposit } from '@/types/businesses';

@@ -1,5 +1,4 @@
-export const dynamic = "force-dynamic";
-
+ 
 import SecretPhraseManager from '@/app/component/admin/SecretPhraseManager'
 import React from 'react'
 
